@@ -22,6 +22,8 @@ public class RobotContainer {
   private void configureBindings() {
     altController.a().onTrue(shooter.runShoot());
     altController.a().onFalse(shooter.runRest());
+    altController.b().onTrue(shooter.runFastShoot());
+    altController.b().onFalse(shooter.runRest());
   }
 
   public Command getAutonomousCommand() {
