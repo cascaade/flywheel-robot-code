@@ -13,6 +13,8 @@ public class Shooter extends SubsystemBase {
     private CANSparkMax shooterUpperMotor;
     private CANSparkMax shooterIndexMotor;
 
+    private int[] activeSpeeds = {};
+
     public Shooter() {
         shooterLowerMotor = new CANSparkMax(ShooterConstants.kLowerMotorCANID, MotorType.kBrushless);
         shooterUpperMotor = new CANSparkMax(ShooterConstants.kUpperMotorCANID, MotorType.kBrushless);
@@ -27,35 +29,41 @@ public class Shooter extends SubsystemBase {
         shooterIndexMotor.burnFlash();
     }
 
-    public void shoot() {
-        shooterLowerMotor.setVoltage(3); // Set the voltage that influences the speed of the motor
-        shooterUpperMotor.setVoltage(-3);
-        shooterIndexMotor.setVoltage(3);
+    public void shoot(speed) {
+        // javascript syntax, will convert to java
+        activeSpeeds.push(speed);
     }
 
-    public void fastShoot() {
-        shooterLowerMotor.setVoltage(6);
-        shooterUpperMotor.setVoltage(-6);
-        shooterIndexMotor.setVoltage(6);
+    public void rest(speed) {
+        // javascript syntax, will convert to java
+        delete activeSpeeds[activeSpeeds.indexOf(speed)]
     }
 
-    public void rest() {
-        shooterLowerMotor.setVoltage(0);
-        shooterUpperMotor.setVoltage(0);
-        shooterIndexMotor.setVoltage(3);
+    public void adjustShooter() {
+        int max = 0;
+        for (int speed : activeSpeeds) {
+            if (speed > max) {
+                max = speed;
+            };
+        };
+        shooterLowerMotor.setVoltage(max);
+        shooterUpperMotor.setVoltage(-max);
+        shooterIndexMotor.setVoltage(max);
     }
 
-    public void 
-
-    public Command runShoot() {
-        return runOnce(() -> shoot());
+    public Command runSlowShoot() {
+        return runOnce(() -> shoot(3));
     }
 
     public command runFastShoot() {
-        return runOnce(() -> fastShoot())
+        return runOnce(() -> fastShoot(6))
     }
 
-    public Command runRest() {
-        return runOnce(() -> rest());
+    public Command runSlowRest() {
+        return runOnce(() -> rest(3));
+    }
+
+    public Command runFastRest() {
+        return runOnce(() -> rest(6));
     }
 }
